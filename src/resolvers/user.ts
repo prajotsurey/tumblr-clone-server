@@ -23,7 +23,7 @@ export class UserResolver{
   } 
 
   @Mutation(() => UserResponse)
-  async registerUser(
+  async register(
     @Arg('options') options: registerUserInput
   ): Promise<UserResponse>{
     const errors = validateRegister(options)
