@@ -1,4 +1,5 @@
 import { Field, InputType } from "type-graphql";
+import { Request, Response } from "express";
 
 @InputType()
 export class registerUserInput {
@@ -14,3 +15,11 @@ export class registerUserInput {
   @Field()
   passwordConfirm!: string
 }
+
+export type MyContext = {
+  req: Request;
+  res: Response;
+  payload?: { userId: string };
+};
+
+

@@ -1,4 +1,5 @@
 import "reflect-metadata";
+import "dotenv/config";
 import { ApolloServer } from 'apollo-server-express';
 import express from "express";
 import { buildSchema } from "type-graphql";
@@ -8,13 +9,47 @@ import { PostResolver } from "./resolvers/post";
 import { UserResolver } from "./resolvers/user";
 import cors from 'cors';
 import { ApolloServerPluginLandingPageGraphQLPlayground } from "apollo-server-core";
+import cookieparser from 'cookie-parser';
+import { verify } from "jsonwebtoken";
+import { User } from "./entities/User";
+import { createAccessToken, createRefreshToken } from "./auth";
+import { sendRefreshToken } from "./sendRefreshToken";
 
 const main = async () => {
   await createConnection()
 
   const app = express();
-
+  app.use(cookieparser());
   app.set("proxy", 1);
+  app.post("/refresh_token", async (req,res) => {
+    const token = req.cookies.jid
+    console.log(req)
+    if(!token) {
+      return res.send({ ok: false, accessToken: '' })
+    }
+
+    let payload: any = null;
+    try {
+      payload = verify(token, process.env.REFRESH_TOKEN_SECRET!)
+    } catch(err) {
+      console.log(err)
+      return res.send({ ok: false, accessToken: '' })
+    }
+
+    const user = await User.findOne({id: payload.userId})
+
+    if(!user) {
+      return res.send({ ok: false, accessToken: '' })
+    }
+
+    if(user.tokenVersion !== payload.tokenVersion) {
+      return res.send({ ok: false, accessToken: '' })
+    }
+
+    sendRefreshToken(res, createRefreshToken(user))
+
+    return res.send({ ok: true, accessToken: createAccessToken(user) });
+  })
   app.use(
     cors({
       origin: "http://localhost:3000",
@@ -30,6 +65,7 @@ const main = async () => {
     plugins: [
       ApolloServerPluginLandingPageGraphQLPlayground(),
     ],
+    context: ({req, res}) => ({ req, res })
    });
 
   await apolloServer.start()

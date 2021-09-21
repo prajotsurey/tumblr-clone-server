@@ -1,8 +1,13 @@
 import argon2 from 'argon2';
-import { Arg, Field, Mutation, ObjectType, Query, Resolver } from "type-graphql";
+import { sign } from 'jsonwebtoken';
+import { createAccessToken, createRefreshToken } from '../auth';
+import { Arg, Ctx, Field, Int, Mutation, ObjectType, Query, Resolver, UseMiddleware } from "type-graphql";
 import { User } from "../entities/User";
-import { registerUserInput } from '../utils/types';
+import { MyContext, registerUserInput } from '../utils/types';
 import { validateOutput, validateRegister } from '../utils/validateRegister';
+import { isAuth } from '../isAuth';
+import { sendRefreshToken } from '../sendRefreshToken';
+import { getConnection } from 'typeorm';
 
 @ObjectType()
 class UserResponse {
@@ -11,6 +16,9 @@ class UserResponse {
 
   @Field(() => User, { nullable: true })
   user?: User
+
+  @Field(() => String, {nullable: true})
+  token?: string
 }
 
 
@@ -21,6 +29,14 @@ export class UserResolver{
     @Arg('id') id: string){
   return await User.findOne(id)
   } 
+
+  @Query(() => String)
+  @UseMiddleware(isAuth)
+  bye(
+    @Ctx() {payload}: MyContext
+  ) {
+    return `your userId is ${payload!.userId}`;
+  }
 
   @Mutation(() => UserResponse)
   async register(
@@ -52,10 +68,22 @@ export class UserResolver{
     }
   }
 
+  @Mutation(() => Boolean)
+  async revokeRefreshTokensForUser(
+    @Arg('userId', () => Int) userId: number
+  ) {
+    await getConnection()
+    .getRepository(User)
+    .increment({ id: userId },"tokenVersion", 1);
+    
+    return true;
+  }
+
   @Mutation(() => UserResponse)
   async login(
     @Arg('username') username: string,
     @Arg('password') password: string,
+    @Ctx() {res}: MyContext
   ):Promise<UserResponse>{
     try{
       const user = await User.findOne({ where: {username: username}})
@@ -74,27 +102,31 @@ export class UserResolver{
         }
       }
       const valid = await argon2.verify(user.password, password)
-      if(valid){
+      if(!valid){
         return {
-          user: user
+          errors:[
+            {
+              field: 'username',
+              message: 'incorrect username or password'
+            },
+            {
+              field: 'password',
+              message: 'incorrect username or password'
+            }
+          ]
         }
       }
+
+      sendRefreshToken(res,createRefreshToken(user))
+    
       return {
-        errors:[
-          {
-            field: 'username',
-            message: 'incorrect username or password'
-          },
-          {
-            field: 'password',
-            message: 'incorrect username or password'
-          }
-        ]
+        user: user,
+        token: createAccessToken(user)
       }
+
     } catch(e){
       return {};
     }
   }
-
 
 }

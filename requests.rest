@@ -1,0 +1,3 @@
+POST http://localhost:4000/refresh_token HTTP/1.1
+content-type: application/json
+Authorization: "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE0LCJpYXQiOjE2MzIyMzI3MzEsImV4cCI6MTYzMjgzNzUzMX0.sWMvFU444dLitag3PXXvFSK9I54G1rEfFqKu2wPFXA0"
