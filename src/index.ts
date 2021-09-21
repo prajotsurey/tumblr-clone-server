@@ -20,6 +20,12 @@ const main = async () => {
 
   const app = express();
   app.use(cookieparser());
+  app.use(
+    cors({
+      origin: "http://localhost:3000",
+      credentials: true,
+    },)
+  )
   app.set("proxy", 1);
   app.post("/refresh_token", async (req,res) => {
     const token = req.cookies.jid
@@ -50,12 +56,7 @@ const main = async () => {
 
     return res.send({ ok: true, accessToken: createAccessToken(user) });
   })
-  app.use(
-    cors({
-      origin: "http://localhost:3000",
-      credentials: true,
-    },)
-  )
+
 
   const schema = await buildSchema({
     resolvers: [HelloResolver, PostResolver, UserResolver]
