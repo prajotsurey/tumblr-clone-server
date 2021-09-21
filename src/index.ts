@@ -29,7 +29,6 @@ const main = async () => {
   app.set("proxy", 1);
   app.post("/refresh_token", async (req,res) => {
     const token = req.cookies.jid
-    console.log(req)
     if(!token) {
       return res.send({ ok: false, accessToken: '' })
     }
@@ -38,7 +37,6 @@ const main = async () => {
     try {
       payload = verify(token, process.env.REFRESH_TOKEN_SECRET!)
     } catch(err) {
-      console.log(err)
       return res.send({ ok: false, accessToken: '' })
     }
 

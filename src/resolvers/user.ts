@@ -117,8 +117,10 @@ export class UserResolver{
         }
       }
 
-      sendRefreshToken(res,createRefreshToken(user))
-    
+      // sendRefreshToken(res,createRefreshToken(user))
+      res.cookie("jid", createRefreshToken(user), {
+        httpOnly: true
+      })
       return {
         user: user,
         token: createAccessToken(user)
@@ -128,5 +130,9 @@ export class UserResolver{
       return {};
     }
   }
-
+  @Mutation(() => Boolean)
+  async logout(@Ctx() {res}:MyContext){
+    res.clearCookie('jid')
+    return true;
+  }
 }
