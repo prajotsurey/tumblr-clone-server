@@ -14,10 +14,11 @@ import { verify } from "jsonwebtoken";
 import { User } from "./entities/User";
 import { createAccessToken, createRefreshToken } from "./auth";
 import { sendRefreshToken } from "./sendRefreshToken";
+import { Post } from "./entities/Post";
 
 const main = async () => {
   await createConnection()
-
+  Post.delete({})
   const app = express();
   app.use(cookieparser());
   app.use(
