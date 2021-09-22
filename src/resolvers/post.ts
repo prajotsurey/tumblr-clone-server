@@ -1,9 +1,10 @@
 import { Post } from "../entities/Post";
-import { Resolver,Mutation, Arg, Query, UseMiddleware, Ctx, Field, ObjectType } from "type-graphql";
+import { Resolver,Mutation, Arg, Query, UseMiddleware, Ctx, Field, ObjectType, FieldResolver, Root } from "type-graphql";
 import { isAuth } from "../isAuth";
 import { MyContext } from "../utils/types";
 import { validateCreatePost } from "../utils/validateCreatePost";
 import { validateOutput } from "../utils/validateRegister";
+import { User } from "../entities/User";
 
 @ObjectType()
 class CreatePostResponse {
@@ -14,8 +15,16 @@ class CreatePostResponse {
   post?: Post
 }
 
-@Resolver()
+@Resolver(of => Post)
 export class PostResolver {
+  
+  @FieldResolver()
+  async creator(@Root() post: Post){
+    const user =  await User.find({ id: post.creatorId })
+    console.log(user)
+    return user[0]
+  }
+
   @Query(() => [Post])
   @UseMiddleware(isAuth)
   async posts() {

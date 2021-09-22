@@ -1,4 +1,5 @@
 import argon2 from 'argon2';
+import { verify } from 'jsonwebtoken';
 import { Arg, Ctx, Field, Int, Mutation, ObjectType, Query, Resolver, UseMiddleware } from "type-graphql";
 import { getConnection } from 'typeorm';
 import { createAccessToken, createRefreshToken } from '../auth';
@@ -22,6 +23,29 @@ class UserResponse {
 
 @Resolver()
 export class UserResolver{
+
+  @Query(() => User, { nullable: true})
+  async Me(
+    @Ctx() { req }: MyContext){
+    const authorization = req.headers['authorization'];
+
+    if(!authorization) {
+      throw new Error("not authenticated");
+    }
+
+    try {
+      const token = authorization.split(' ')[1];
+      const payload:any = verify(token, process.env.ACCESS_TOKEN_SECRET!)
+      const user = User.findOne({ id: payload.userId })
+      if(user){
+        return user
+      }
+    } catch(err) {
+      console.log(err)
+      throw new Error("not authenticated")
+    }
+  }
+  
   @Query(() => User, { nullable: true})
   async user(
     @Arg('id') id: string){
