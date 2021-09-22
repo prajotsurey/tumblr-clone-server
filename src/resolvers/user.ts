@@ -1,13 +1,11 @@
 import argon2 from 'argon2';
-import { sign } from 'jsonwebtoken';
-import { createAccessToken, createRefreshToken } from '../auth';
 import { Arg, Ctx, Field, Int, Mutation, ObjectType, Query, Resolver, UseMiddleware } from "type-graphql";
+import { getConnection } from 'typeorm';
+import { createAccessToken, createRefreshToken } from '../auth';
 import { User } from "../entities/User";
+import { isAuth } from '../isAuth';
 import { MyContext, registerUserInput } from '../utils/types';
 import { validateOutput, validateRegister } from '../utils/validateRegister';
-import { isAuth } from '../isAuth';
-import { sendRefreshToken } from '../sendRefreshToken';
-import { getConnection } from 'typeorm';
 
 @ObjectType()
 class UserResponse {
