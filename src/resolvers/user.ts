@@ -30,7 +30,7 @@ export class UserResolver{
     const authorization = req.headers['authorization'];
 
     if(!authorization) {
-      throw new Error("not authenticated");
+      return null;
     }
 
     try {
@@ -42,7 +42,7 @@ export class UserResolver{
       }
     } catch(err) {
       console.log(err)
-      throw new Error("not authenticated")
+      return null;
     }
   }
   
