@@ -34,6 +34,8 @@ export class Post extends BaseEntity {
   @Column({default : 0})
   noteCount: number;
 
+  @Field()
+  noteStatus: Boolean;
 
   @Field()
   @CreateDateColumn()

@@ -27,6 +27,14 @@ export class PostResolver {
     return user[0]
   }
 
+  @FieldResolver()
+  async noteStatus(@Root() post: Post,
+  @Ctx() { payload }: MyContext) {
+    const status =  await Note.find({ where: { userId: payload?.userId as any, postId: post.id  }})
+    console.log(status)
+    return !!status[0]
+  }
+
   @Query(() => [Post])
   @UseMiddleware(isAuth)
   async posts() {
