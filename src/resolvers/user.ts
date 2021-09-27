@@ -48,8 +48,8 @@ export class UserResolver{
   
   @Query(() => User, { nullable: true})
   async user(
-    @Arg('id') id: string){
-  return await User.findOne(id)
+    @Arg('id') id: number){
+  return await User.findOne(id, {relations: ['posts']})
   } 
 
   @Query(() => String)

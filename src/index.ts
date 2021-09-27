@@ -18,7 +18,6 @@ import { Post } from "./entities/Post";
 
 const main = async () => {
   await createConnection()
-  Post.delete({})
   const app = express();
   app.use(cookieparser());
   app.use(
