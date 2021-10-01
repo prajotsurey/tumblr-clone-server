@@ -44,6 +44,7 @@ export class UserResolver{
       console.log(err)
       return null;
     }
+    return 'me'
   }
   
   @Query(() => User, { nullable: true})

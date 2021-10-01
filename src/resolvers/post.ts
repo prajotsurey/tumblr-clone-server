@@ -17,13 +17,21 @@ class CreatePostResponse {
   post?: Post
 }
 
-@Resolver(of => Post)
+@ObjectType()
+class PaginatedPostsResponse {
+  @Field(() => Boolean)
+  hasMore: Boolean;
+
+  @Field(() => [Post], { nullable: true })
+  posts?: [Post]
+}
+
+@Resolver(__of => Post)
 export class PostResolver {
   
   @FieldResolver()
   async creator(@Root() post: Post){
     const user =  await User.find({ id: post.creatorId })
-    console.log(user)
     return user[0]
   }
 
@@ -39,6 +47,35 @@ export class PostResolver {
   @UseMiddleware(isAuth)
   async posts() {
     return await Post.find({relations: ['notes', 'creator']})
+  }
+
+  @Query(() => PaginatedPostsResponse)
+  @UseMiddleware(isAuth)
+  async paginatedPosts(
+    @Arg('cursor', () => String, { nullable: true }) cursor: string | null,
+  ): Promise<PaginatedPostsResponse> {
+
+    const replacements: any[] = []
+
+    if(cursor) {
+      replacements.push(cursor);
+    }
+
+    const posts = await getConnection().query(
+      `
+      select p.*
+      from post p
+      ${cursor ? `where p."createdAt" < $1` : ""}
+      order by p."createdAt" DESC
+      limit 11
+    `,
+      replacements
+    );
+
+    return {
+      posts: posts.slice(0, 10),
+      hasMore: posts.length === 11
+    }
   }
 
   @Mutation(() => CreatePostResponse)

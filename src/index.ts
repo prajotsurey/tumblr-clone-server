@@ -1,20 +1,19 @@
-import "reflect-metadata";
-import "dotenv/config";
+import { ApolloServerPluginLandingPageGraphQLPlayground } from "apollo-server-core";
 import { ApolloServer } from 'apollo-server-express';
+import cookieparser from 'cookie-parser';
+import cors from 'cors';
+import "dotenv/config";
 import express from "express";
+import { verify } from "jsonwebtoken";
+import "reflect-metadata";
 import { buildSchema } from "type-graphql";
-import { HelloResolver } from "./resolvers/hello";
 import { createConnection } from "typeorm";
+import { createAccessToken, createRefreshToken } from "./auth";
+import { User } from "./entities/User";
+import { HelloResolver } from "./resolvers/hello";
 import { PostResolver } from "./resolvers/post";
 import { UserResolver } from "./resolvers/user";
-import cors from 'cors';
-import { ApolloServerPluginLandingPageGraphQLPlayground } from "apollo-server-core";
-import cookieparser from 'cookie-parser';
-import { verify } from "jsonwebtoken";
-import { User } from "./entities/User";
-import { createAccessToken, createRefreshToken } from "./auth";
 import { sendRefreshToken } from "./sendRefreshToken";
-import { Post } from "./entities/Post";
 
 const main = async () => {
   await createConnection()

@@ -9,5 +9,5 @@
   "synchronize": true,
   "logging": true,
   "entities": ["dist/entities/*.js"],
-  "migrations": ["dist/migrations/*.ts"]
+  "migrations": ["dist/migrations/*.js"]
 }

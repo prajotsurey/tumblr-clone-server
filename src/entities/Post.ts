@@ -1,7 +1,7 @@
-import {Entity, PrimaryGeneratedColumn, Column, BaseEntity, CreateDateColumn, UpdateDateColumn, ManyToOne, OneToMany, Not} from "typeorm";
-import { ObjectType, Field } from "type-graphql";
-import { User } from "./User";
+import { Field, ObjectType } from "type-graphql";
+import { BaseEntity, Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Note } from "./Note";
+import { User } from "./User";
 
 @ObjectType()
 @Entity()
@@ -18,7 +18,7 @@ export class Post extends BaseEntity {
   @Column()
   text!: string;
 
-  @Field()
+  @Field( () => User)
   @ManyToOne(() => User, user => user.posts)
   creator: User;
 
