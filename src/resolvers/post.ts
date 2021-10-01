@@ -7,6 +7,7 @@ import { validateOutput } from "../utils/validateRegister";
 import { User } from "../entities/User";
 import { Note } from "../entities/Note";
 import { getConnection } from "typeorm";
+import { createNoteStatusLoader } from "src/utils/createNoteStatusLoader";
 
 @ObjectType()
 class CreatePostResponse {
@@ -30,17 +31,18 @@ class PaginatedPostsResponse {
 export class PostResolver {
   
   @FieldResolver()
-  async creator(@Root() post: Post){
-    const user =  await User.find({ id: post.creatorId })
-    return user[0]
+  async creator(@Root() post: Post,
+  @Ctx() {userLoader}: MyContext){
+    return userLoader.load(post.creatorId)
   }
 
   @FieldResolver()
   async noteStatus(@Root() post: Post,
-  @Ctx() { payload }: MyContext) {
-    const status =  await Note.find({ where: { userId: payload?.userId as any, postId: post.id  }})
-    console.log(status)
-    return !!status[0]
+  @Ctx() { payload, noteStatusLoader }: MyContext) {
+    return noteStatusLoader.load({
+      postId : post.id, 
+      userId : payload?.userId as any
+    })
   }
 
   @Query(() => [Post])

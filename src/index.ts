@@ -14,6 +14,8 @@ import { HelloResolver } from "./resolvers/hello";
 import { PostResolver } from "./resolvers/post";
 import { UserResolver } from "./resolvers/user";
 import { sendRefreshToken } from "./sendRefreshToken";
+import { createNoteStatusLoader } from "./utils/createNoteStatusLoader";
+import { createUserLoader } from "./utils/createUserLoader";
 
 const main = async () => {
   await createConnection()
@@ -63,7 +65,12 @@ const main = async () => {
     plugins: [
       ApolloServerPluginLandingPageGraphQLPlayground(),
     ],
-    context: ({req, res}) => ({ req, res })
+    context: ({req, res}) => ({
+      req,
+      res,
+      userLoader: createUserLoader(),
+      noteStatusLoader: createNoteStatusLoader()
+    })
    });
 
   await apolloServer.start()
