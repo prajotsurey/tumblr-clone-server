@@ -91,7 +91,6 @@ export class PostResolver {
     if(errors){
       return { errors } ;
     }
-    console.log(Context.payload)
     const post =  await Post.create({
       title,
       text,
