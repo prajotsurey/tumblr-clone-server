@@ -1,13 +1,11 @@
+import { Arg, Ctx, Field, FieldResolver, Int, Mutation, ObjectType, Query, Resolver, Root, UseMiddleware } from "type-graphql";
+import { getConnection } from "typeorm";
+import { Note } from "../entities/Note";
 import { Post } from "../entities/Post";
-import { Resolver,Mutation, Arg, Query, UseMiddleware, Ctx, Field, ObjectType, FieldResolver, Root, Int } from "type-graphql";
 import { isAuth } from "../isAuth";
 import { MyContext } from "../utils/types";
 import { validateCreatePost } from "../utils/validateCreatePost";
 import { validateOutput } from "../utils/validateRegister";
-import { User } from "../entities/User";
-import { Note } from "../entities/Note";
-import { getConnection } from "typeorm";
-import { createNoteStatusLoader } from "src/utils/createNoteStatusLoader";
 
 @ObjectType()
 class CreatePostResponse {

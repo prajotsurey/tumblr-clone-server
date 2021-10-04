@@ -1,12 +1,11 @@
-{ 
+module.exports = { 
   "name": "default",
   "type": "postgres",
-  "host": "localhost",
-  "port": 5432,
+  "host": "db",
   "username": "postgres",
   "password": "password",
   "database": "tumblr",
-  "synchronize": true,
+  "port": 5432,
   "logging": true,
   "entities": ["dist/entities/*.js"],
   "migrations": ["dist/migrations/*.js"]

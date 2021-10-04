@@ -18,7 +18,24 @@ import { createNoteStatusLoader } from "./utils/createNoteStatusLoader";
 import { createUserLoader } from "./utils/createUserLoader";
 
 const main = async () => {
-  await createConnection()
+  let retries = 5
+  while (retries){
+    try {
+      const conn = await createConnection()
+      console.log(process.env.NODE_ENV)
+      if(process.env.NODE_ENV === 'production'){
+        console.log(process.env.ENV)
+        await conn.runMigrations();
+      }
+      break;
+    } catch (err) {
+      console.log(err)
+      retries -= 1;
+      console.log(`retries left: ${retries}`)
+      await new Promise(res => setTimeout(res,5000))
+    }
+  }
+  
   const app = express();
   app.use(cookieparser());
   app.use(
@@ -79,8 +96,8 @@ const main = async () => {
     cors: false
    });
 
-  app.listen(4000, () => {
-    console.log('server started on http://localhost:4000')
+  app.listen(process.env.PORT, () => {
+    console.log(`server started on http://localhost:${process.env.PORT}`)
   })
 }
 
