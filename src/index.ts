@@ -87,7 +87,8 @@ const main = async () => {
       res,
       userLoader: createUserLoader(),
       noteStatusLoader: createNoteStatusLoader()
-    })
+    }),
+    introspection: true
    });
 
   await apolloServer.start()
