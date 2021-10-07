@@ -1,5 +1,5 @@
 #prod
-FROM node:16 as prod
+FROM node:16
 
 WORKDIR /usr/src/app
 
