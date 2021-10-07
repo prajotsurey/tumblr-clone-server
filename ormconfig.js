@@ -1,10 +1,7 @@
 module.exports = {
   "name": "default",
   "type": "postgres",
-  "host": process.env.NODE_ENV === 'development' ? 'localhost' : 'db',
-  "username": process.env.POSTGRES_USER,
-  "password": process.env.POSTGRES_PASSWORD,
-  "database": process.env.POSTGRES_DB,
+  "url" : process.env.DATABASE_URL,
   "port": 5432,
   "logging": true,
   "entities": ["dist/entities/*.js"],
