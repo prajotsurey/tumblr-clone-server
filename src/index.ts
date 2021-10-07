@@ -38,6 +38,7 @@ const main = async () => {
   
   const app = express();
   app.use(cookieparser());
+  console.log(process.env.CORS_ORIGIN)
   app.use(
     cors({
       origin: process.env.CORS_ORIGIN,
