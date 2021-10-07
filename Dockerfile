@@ -9,8 +9,6 @@ RUN npm install
 
 COPY . .
 
-COPY ./ormconfig-docker.js ./ormconfig.js
-
 RUN npm run build
 
 ENV NODE_ENV=production
