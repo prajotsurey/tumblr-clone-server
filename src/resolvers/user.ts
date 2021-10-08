@@ -1,5 +1,6 @@
 import argon2 from 'argon2';
 import { verify } from 'jsonwebtoken';
+import { validateLogin } from '../utils/validateLogin';
 import { Arg, Ctx, Field, Int, Mutation, ObjectType, Query, Resolver, UseMiddleware } from "type-graphql";
 import { getConnection } from 'typeorm';
 import { createAccessToken, createRefreshToken } from '../auth';
@@ -108,6 +109,10 @@ export class UserResolver{
     @Arg('password') password: string,
     @Ctx() {res}: MyContext
   ):Promise<UserResponse>{
+    const errors = validateLogin(username, password)
+    if(errors){
+      return { errors } ;
+    }
     try{
       const user = await User.findOne({ where: {username: username}})
       if(!user){

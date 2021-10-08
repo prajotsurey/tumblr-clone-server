@@ -6,7 +6,7 @@ export const validateCreatePost = (title: string, text: string): validateOutput[
     return[
       {
         field: "text",
-        message: "must be longer than 1"
+        message: "Text is missing"
       }
     ]
   }
@@ -15,7 +15,7 @@ export const validateCreatePost = (title: string, text: string): validateOutput[
     return[
       {
         field: "title",
-        message: "must be longer than 1"
+        message: "Title is missing"
       }
     ]
   }
