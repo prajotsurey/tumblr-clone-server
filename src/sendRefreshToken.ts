@@ -5,7 +5,9 @@ export const sendRefreshToken = (res: Response, token: string) => {
     'jid',token,
     { 
       httpOnly: true,
-      path: "/"
+      path: "/",
+      sameSite: 'none',
+      secure: true,
     }
   )
 }
