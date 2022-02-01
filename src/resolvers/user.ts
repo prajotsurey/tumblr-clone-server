@@ -8,7 +8,7 @@ import { User } from "../entities/User";
 import { isAuth } from '../isAuth';
 import { MyContext, registerUserInput } from '../utils/types';
 import { validateOutput, validateRegister } from '../utils/validateRegister';
-import { sendRefreshToken } from 'src/sendRefreshToken';
+import { sendRefreshToken } from '../sendRefreshToken';
 
 @ObjectType()
 class UserResponse {
