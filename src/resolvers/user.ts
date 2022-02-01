@@ -146,10 +146,7 @@ export class UserResolver{
         }
       }
 
-      // sendRefreshToken(res,createRefreshToken(user))
-      res.cookie("jid", createRefreshToken(user), {
-        httpOnly: true
-      })
+      sendRefreshToken(res,createRefreshToken(user))
       return {
         user: user,
         token: createAccessToken(user)
