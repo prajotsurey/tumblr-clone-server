@@ -1,6 +1,6 @@
-# Tumblr clone server built with Typescript, Apollo-express-server, PSQL and Graphql
+# Tumblr clone server built with Typescript, Apollo-express-server, PSQL and Graphql. [Website](https://tumblr-clone-client.vercel.app/)
 
-This project is the backend for a [fullstack tumblr clone](https://tumblr-clone-client.vercel.app/).
+This project is the backend for a fullstack tumblr clone.
 
 [Frontend repository](https://github.com/prajotsurey/tumblr-clone-client)
 
